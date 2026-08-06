@@ -2,7 +2,7 @@
   "staticPath": "firmware/simple-sensor",
   "explainer": {
     "title": "MeshCore Ultrasonic Sensor — Sender + Receiver",
-    "body": "<p>This kit is a pair of MeshCore devices that bridge a MaxBotix ultrasonic distance sensor to the internet over LoRa.</p><ul><li><b>Sender</b> — a Rook (nRF52840) that reads the ultrasonic sensor and transmits <code>[SENSOR] dist=... batt=...</code> LoRa DMs.</li><li><b>Receiver</b> — a Heltec V3 (ESP32-S3) that receives, ACKs, and POSTs the reading to Bayou over WiFi.</li></ul><p>Setup is three steps: flash the firmware onto both devices, get them to exchange identities so they can talk to each other, then configure WiFi and any other settings from the serial console.</p>",
+    "body": "<p>This kit is a pair of MeshCore devices that bridge a MaxBotix ultrasonic distance sensor to the internet over LoRa.</p><ul><li><b>Sender</b> — a Rook (nRF52840) that reads the ultrasonic sensor and transmits <code>[SENSOR] dist=... batt=...</code> LoRa DMs.</li><li><b>Receiver</b> — a Heltec (V3 or V4, both ESP32-S3) that receives, ACKs, and POSTs the reading to Bayou over WiFi.</li></ul><p>Setup is three steps: flash the firmware onto both devices, get them to exchange identities so they can talk to each other, then configure WiFi and any other settings from the serial console.</p>",
     "image": "img/sensor-system.svg",
     "imageMobile": "img/sensor-system-mobile.svg"
   },
@@ -117,6 +117,35 @@
                 }
               ],
               "notes": "v3-ultrasonic build\n* Receives LoRa DMs, posts to Bayou\n* Bayou defaults baked in (bayou_public_key = mfupcqtx34ee, bayou_private_key = t3w7v5zpk8ya) — override with `set bayou_public_key ...` / `set bayou_private_key ...`\n* Set WiFi with `set wifi_ssid ...` and `set wifi_password ...`, then `reboot`"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "maker": "heltec",
+      "class": "community",
+      "name": "Heltec V4 — Receiver",
+      "icon": "img/lora.svg",
+      "type": "esp32",
+      "firmware": [
+        {
+          "role": "sensorReceiver",
+          "version": {
+            "v3-ultrasonic": {
+              "files": [
+                {
+                  "type": "flash-wipe",
+                  "name": "heltec_v4_receiver_ultrasonic_v3_merged.bin",
+                  "title": "heltec_v4_receiver_ultrasonic_v3_merged.bin — full flash (tick 'Erase device')"
+                },
+                {
+                  "type": "flash-update",
+                  "name": "heltec_v4_receiver_ultrasonic_v3.bin",
+                  "title": "heltec_v4_receiver_ultrasonic_v3.bin — app only (safe update, keeps bootloader)"
+                }
+              ],
+              "notes": "v3-ultrasonic build (Heltec WiFi LoRa 32 V4, ESP32-S3, native USB)\n* Same firmware role as the V3 receiver — receives LoRa DMs, posts to Bayou\n* Bayou defaults baked in (bayou_public_key = mfupcqtx34ee, bayou_private_key = t3w7v5zpk8ya) — override with `set bayou_public_key ...` / `set bayou_private_key ...`\n* Set WiFi with `set wifi_ssid ...` and `set wifi_password ...`, then `reboot`\n* If flashing fails with `OSError: [Errno 71] Protocol error`, hold BOOT, tap RESET, release BOOT, then retry"
             }
           }
         }
