@@ -29,6 +29,8 @@ Vue 3 SPA, single `index.html` + `flasher.js` + `simple-sensor.json`. **All page
 
 **Config JSON conventions.** Section keys: `explainer`, `flashingSection`, `contactExchange`, `configuration` (with `intro` + `commonSettings` + `helpText`). Per-device: `firmware[].version['<version-tag>'].files[]` with `type` in `download`/`flash-wipe`/`flash-update`.
 
+**Subpath portability.** All asset paths are relative (no leading `/`) so the site works when hosted at any subpath (e.g. `edgecollective.io/micro-config/`). The SPA URL routing is fragment-based (`#/rook-v4/...`) rather than pathname-based, so navigation state changes don't push the browser out of the deployment subpath and no server rewrites are needed. When adding new asset paths anywhere (HTML, JSON, JS, SVG), keep them relative.
+
 ## Running locally
 
 ```

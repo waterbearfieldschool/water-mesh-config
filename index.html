@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Setting up a MeshCore-based Ultrasonic Water Level Sensor</title>
-  <link href="/css/beer.css" rel="stylesheet">
-  <link href="/css/flasher.css" rel="stylesheet">
-  <script type="module" src="/flasher.js"></script>
+  <link href="css/beer.css" rel="stylesheet">
+  <link href="css/flasher.css" rel="stylesheet">
+  <script type="module" src="flasher.js"></script>
 </head>
 
 <body class="dark">
@@ -220,8 +220,8 @@
       <div v-else>
         <header>
           <nav class="brand-row">
-            <img src="/img/rural_rivers_project.png" alt="Rural Rivers Project" class="brand-logo brand-logo--rrp">
-            <img src="/img/meshcore.svg" alt="MeshCore" class="brand-logo brand-logo--meshcore">
+            <img src="img/rural_rivers_project.png" alt="Rural Rivers Project" class="brand-logo brand-logo--rrp">
+            <img src="img/meshcore.svg" alt="MeshCore" class="brand-logo brand-logo--meshcore">
           </nav>
           <nav>
             <h3 class="max page-main-title">Setting up a MeshCore-based Ultrasonic Water Level Sensor</h3>
@@ -257,7 +257,7 @@
               <template v-for="device in deviceGroup">
                 <li v-if="device.firmware.length > 0">
                   <button class="device-select transparent" @click="selected.device = device">
-                    <img class="icon" :title="device.type" :src="`/img/${device.type}.svg`" v-if="device.type !== 'noflash'">
+                    <img class="icon" :title="device.type" :src="`img/${device.type}.svg`" v-if="device.type !== 'noflash'">
                     <i v-else>developer_board</i>
                     <span>{{ device.name }}</span>
                     <div class="tooltip right max" v-if="device.tooltip" v-html="device.tooltip"></div>
@@ -335,6 +335,6 @@
       </pre>
     </div>
   </div>
-  <script src="/lib/iframeResizer.contentWindow.min.js"></script>
+  <script src="lib/iframeResizer.contentWindow.min.js"></script>
 </body>
 </html>

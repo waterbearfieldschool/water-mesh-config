@@ -9,7 +9,7 @@
   </style>
 
   <rect x="20"  y="30" width="150" height="220" rx="8" class="box"/>
-  <image href="/img/rook_ultrasonic_sender_closeup.png" x="30" y="40" width="130" height="150" preserveAspectRatio="xMidYMax meet"/>
+  <image href="img/rook_ultrasonic_sender_closeup.png" x="30" y="40" width="130" height="150" preserveAspectRatio="xMidYMax meet"/>
   <text x="95"  y="215" class="lbl">Sender (Rook)</text>
   <text x="95"  y="235" class="sub">ultrasonic + LoRa</text>
 
@@ -18,7 +18,7 @@
   <text x="226" y="128" class="radio">LoRa</text>
 
   <rect x="280" y="30" width="150" height="220" rx="8" class="box"/>
-  <image href="/img/sensor_receiver.png" x="290" y="40" width="130" height="150" preserveAspectRatio="xMidYMax meet"/>
+  <image href="img/sensor_receiver.png" x="290" y="40" width="130" height="150" preserveAspectRatio="xMidYMax meet"/>
   <text x="355" y="215" class="lbl">Receiver (Heltec V3)</text>
   <text x="355" y="235" class="sub">LoRa + WiFi</text>
 

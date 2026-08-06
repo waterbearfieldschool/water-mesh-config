@@ -1,17 +1,17 @@
-import "/lib/beer.min.js";
-import { createApp, reactive, ref, nextTick, watch, computed } from "/lib/vue.min.js";
-import { Dfu } from "/lib/dfu.js";
-import { ESPLoader, Transport, HardReset } from "/lib/esp32.js";
-import { SerialConsole } from '/lib/console.js';
+import "./lib/beer.min.js";
+import { createApp, reactive, ref, nextTick, watch, computed } from "./lib/vue.min.js";
+import { Dfu } from "./lib/dfu.js";
+import { ESPLoader, Transport, HardReset } from "./lib/esp32.js";
+import { SerialConsole } from './lib/console.js';
 
 const searchParams = new URLSearchParams(location.search);
 const configName = searchParams.get('config')?.replaceAll(/[^a-z_-]/g, '') ?? 'simple-sensor';
-const configRes = await fetch(`/${configName}.json`);
+const configRes = await fetch(`${configName}.json`);
 const config = await configRes.json();
 
 let github = [];
 try {
-  const githubRes = await fetch('/releases');
+  const githubRes = await fetch('releases');
   if (githubRes.ok) github = await githubRes.json();
   else console.warn(`No /releases endpoint (HTTP ${githubRes.status}) — GitHub-driven versions disabled.`);
 } catch (e) {
@@ -259,7 +259,8 @@ function setup() {
   }
 
   // --- URL Routing ---
-  // NOTE: the server must serve index.html for all paths (catch-all / try_files).
+  // Hash-based so it works at any subpath deployment (no server rewrites needed).
+  // State lives in location.hash (e.g. "#/rook-v4/sensor-sender/v3"), pathname stays put.
 
   const deviceToSlug = (device) => toSlug([device.class, device.name].join('-'));
 
@@ -271,21 +272,22 @@ function setup() {
 
   let initializingFromUrl = false;
 
-  const buildUrl = () => {
-    if (serialCon.opened) return '/console';
-    if (!selected.device) return '/';
-    let path = '/' + deviceToSlug(selected.device) + '/';
-    if (!selected.firmware) return path;
-    path += firmwareToSlug(selected.firmware) + '/';
-    if (selected.version) path += toSlug(selected.version);
-    return path;
+  const buildFragment = () => {
+    if (serialCon.opened) return '#console';
+    if (!selected.device) return '';
+    let hash = '#/' + deviceToSlug(selected.device);
+    if (!selected.firmware) return hash + '/';
+    hash += '/' + firmwareToSlug(selected.firmware);
+    if (selected.version) hash += '/' + toSlug(selected.version);
+    return hash + '/';
   };
 
   const updateUrl = (replace = false) => {
     if (initializingFromUrl) return;
-    const path = buildUrl();
-    if (window.location.pathname !== path) {
-      replace ? history.replaceState(null, '', path) : history.pushState(null, '', path);
+    const fragment = buildFragment();
+    const url = location.pathname + location.search + fragment;
+    if (location.href !== new URL(url, location.origin).href) {
+      replace ? history.replaceState(null, '', url) : history.pushState(null, '', url);
     }
   };
 
@@ -678,10 +680,10 @@ function setup() {
     selected.firmware = null;
     selected.version = null;
     selected.device = null;
-    applyUrlPath(window.location.pathname);
+    applyUrlPath(window.location.hash.replace(/^#/, '') || '/');
   });
 
-  applyUrlPath(window.location.pathname);
+  applyUrlPath(window.location.hash.replace(/^#/, '') || '/');
 
   return {
     snackbar,
