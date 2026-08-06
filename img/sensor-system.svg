@@ -19,7 +19,7 @@
 
   <rect x="290" y="30" width="180" height="220" rx="8" class="box"/>
   <image href="img/sensor_receiver.png" x="305" y="40" width="150" height="150" preserveAspectRatio="xMidYMax meet"/>
-  <text x="380" y="215" class="lbl">Receiver (Heltec V3)</text>
+  <text x="380" y="215" class="lbl" style="font-size:10.5px">Receiver (Heltec V3)</text>
   <text x="380" y="235" class="sub">LoRa + WiFi</text>
 
   <path class="arrow" d="M 480 140 L 535 140"/>
