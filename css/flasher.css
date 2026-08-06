@@ -268,12 +268,22 @@ body:has([v-cloak]):after {
 
 /* Sub-headings inside sections — sit clearly below the big section titles */
 #app .explainer h5,
-#app #configuration h5,
-#app #configuration ul.settings-list h5 {
+#app #configuration h5 {
   font-size: 1rem;
   font-weight: 700;
-  margin: 14px 0 4px;
-  color: #d8d8d8;
+  margin: 18px 0 6px;
+  color: #ffffff;
+}
+
+/* Body content under each subheading gets indented so the h5 → body hierarchy reads clearly */
+#app #configuration > p,
+#app #configuration > ol,
+#app #configuration > .help-grid,
+#app #configuration > div > p,
+#app #configuration > div > ol,
+#app #configuration > div > ul:not(.settings-list),
+#app #configuration > div > pre {
+  padding-left: 18px;
 }
 #app .section-lede {
   margin: 6px 0 12px;
