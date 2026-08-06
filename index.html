@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MeshCore flasher</title>
+  <title>MeshCore Ultrasonic Sensor — Setup</title>
   <link href="/css/beer.css" rel="stylesheet">
   <link href="/css/flasher.css" rel="stylesheet">
   <script type="module" src="/flasher.js"></script>
@@ -239,6 +239,11 @@
             <h6 class="small max">Choose device</h6>
           </nav>
         </header>
+        <article v-if="config.explainer" class="explainer">
+          <h5 v-if="config.explainer.title" class="small">{{ config.explainer.title }}</h5>
+          <img v-if="config.explainer.image" :src="config.explainer.image" class="explainer-image" alt="System overview">
+          <div v-if="config.explainer.body" v-html="config.explainer.body"></div>
+        </article>
         <div class="field label prefix suffix border w-100 no-margin">
           <i>search</i>
           <input type="text" placeholder=" " v-model="deviceFilterText" autofocus>

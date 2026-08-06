@@ -5,14 +5,20 @@ import { ESPLoader, Transport, HardReset } from "/lib/esp32.js";
 import { SerialConsole } from '/lib/console.js';
 
 const searchParams = new URLSearchParams(location.search);
-const configName = searchParams.get('config')?.replaceAll(/[^a-z_-]/g, '') ?? 'config';
+const configName = searchParams.get('config')?.replaceAll(/[^a-z_-]/g, '') ?? 'simple-sensor';
 const configRes = await fetch(`/${configName}.json`);
 const config = await configRes.json();
 
-const githubRes = await fetch('/releases');
-const github = await githubRes.json();
+let github = [];
+try {
+  const githubRes = await fetch('/releases');
+  if (githubRes.ok) github = await githubRes.json();
+  else console.warn(`No /releases endpoint (HTTP ${githubRes.status}) — GitHub-driven versions disabled.`);
+} catch (e) {
+  console.warn('No /releases endpoint — GitHub-driven versions disabled.', e);
+}
 
-const commandReference  = {
+const defaultCommandReference = {
   'time ': 'Set time {epoch-secs}',
   'erase': 'Erase filesystem',
   'advert': 'Send Advertisment packet',
@@ -42,6 +48,10 @@ const commandReference  = {
   'get lat': 'Get the advertisement map latitude',
   'get lon': 'Get the advertisement map longitude',
 };
+
+const commandReference = config.commands && Object.keys(config.commands).length
+  ? config.commands
+  : defaultCommandReference;
 
 async function delay(milis) {
   return await new Promise((resolve) => setTimeout(resolve, milis));

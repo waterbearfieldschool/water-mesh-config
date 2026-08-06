@@ -131,3 +131,39 @@ body:has([v-cloak]):after {
 .text-wrap {
   text-wrap: auto;
 }
+
+#app .explainer {
+  margin: 12px 0 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--surface-container, #1e1e1e);
+  line-height: 1.4;
+}
+#app .explainer h5 {
+  margin: 0 0 8px;
+}
+#app .explainer p {
+  margin: 6px 0;
+}
+#app .explainer ul {
+  margin: 6px 0 6px 20px;
+  padding: 0;
+}
+#app .explainer li {
+  margin: 4px 0;
+  display: list-item;
+  list-style: disc outside;
+}
+#app .explainer-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 8px auto 12px;
+  border-radius: 6px;
+}
+#app .explainer code {
+  font-family: monospace;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 4px;
+  border-radius: 3px;
+}

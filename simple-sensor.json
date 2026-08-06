@@ -1,0 +1,108 @@
+{
+  "staticPath": "/firmware/simple-sensor",
+  "explainer": {
+    "title": "MeshCore Ultrasonic Sensor — Sender + Receiver",
+    "body": "<p>This kit is a pair of MeshCore devices that bridge a MaxBotix ultrasonic distance sensor to the internet over LoRa.</p><ul><li><b>Sender</b> — a Rook (nRF52840) that reads the ultrasonic sensor and transmits <code>[SENSOR] dist=... batt=...</code> LoRa DMs.</li><li><b>Receiver</b> — a Heltec V3 (ESP32-S3) that receives, ACKs, and POSTs the reading to Bayou over WiFi.</li></ul><p>Flash both devices below, then use the <b>Console</b> to set WiFi credentials on the receiver and pair the two devices.</p>",
+    "image": "/img/sensor-system.svg"
+  },
+  "role": {
+    "sensorSender": {
+      "icon": "sensors",
+      "title": "Ultrasonic Sender",
+      "tooltip": "Reads MaxBotix MB7388 over UART, transmits distance + battery over LoRa"
+    },
+    "sensorReceiver": {
+      "icon": "cloud_upload",
+      "title": "Bayou Receiver",
+      "tooltip": "Receives LoRa DMs and posts them to Bayou over WiFi"
+    }
+  },
+  "notice": {
+    "uf2Manual": "<article class='fill small-round'><b>How to flash this Rook</b><br>1. Double-tap the reset button — a <code>NICENANO</code> USB drive appears.<br>2. Click <b>Download</b> below and drag <code>rook_sender.uf2</code> onto that drive.<br>3. The device reboots automatically when the copy finishes.</article>"
+  },
+  "commands": {
+    "advert": "Broadcast this device's identity",
+    "list": "List known contacts",
+    "card": "Show this device's contact card (hex)",
+    "import ": "Import a contact card {hex}",
+    "settings": "Show current settings",
+    "status": "Show WiFi + Bayou connection status (receiver)",
+    "purge": "Erase saved preferences",
+    "reboot": "Reboot the device",
+    "ver": "Show firmware version",
+    "help": "Show command help",
+    "set name ": "Set this device's advert name",
+    "set wifi_ssid ": "Set WiFi SSID {ssid} (receiver, reboot to apply)",
+    "set wifi_password ": "Set WiFi password {pw} (receiver, reboot to apply)",
+    "set bayou_public_key ": "Set Bayou public key (receiver)",
+    "set bayou_private_key ": "Set Bayou private key (receiver)",
+    "set interval ": "Sender send interval in seconds (>= 10)",
+    "set node_id ": "Sender node id 1-65535",
+    "target ": "Set send target to contact {name} (sender)",
+    "target add ": "Add a contact by name (sender)",
+    "target remove ": "Remove a contact by name (sender)",
+    "target clear": "Clear the current send target (sender)",
+    "to ": "Send a DM: to {name} {message} (sender)",
+    "send": "Send a sensor reading now (sender)",
+    "favourite ": "Mark contact as favourite (receiver)",
+    "unfavourite ": "Unmark favourite (receiver)"
+  },
+  "maker": {},
+  "device": [
+    {
+      "maker": "faketec",
+      "class": "community",
+      "name": "Rook v4 — Sender",
+      "icon": "/img/lora.svg",
+      "type": "noflash",
+      "firmware": [
+        {
+          "role": "sensorSender",
+          "notice": "uf2Manual",
+          "version": {
+            "v3-ultrasonic": {
+              "files": [
+                {
+                  "type": "download",
+                  "name": "rook_sender.uf2",
+                  "title": "rook_sender.uf2 (drag onto NICENANO drive in bootloader mode)"
+                }
+              ],
+              "notes": "v3-ultrasonic build\n* MaxBotix MB7388 on Serial1 (D0 = P0.08, \"RX1\")\n* Transmits [SENSOR] dist=... batt=... to the paired receiver\n* Pair by running `advert` on the receiver, then `target <receiver-name>` on the sender"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "maker": "heltec",
+      "class": "community",
+      "name": "Heltec V3 — Receiver",
+      "icon": "/img/lora.svg",
+      "tooltip": "<img class='device' src='/img/heltec_v3.svg'>",
+      "type": "esp32",
+      "firmware": [
+        {
+          "role": "sensorReceiver",
+          "version": {
+            "v3-ultrasonic": {
+              "files": [
+                {
+                  "type": "flash-wipe",
+                  "name": "heltec_v3_receiver_merged.bin",
+                  "title": "Combined bootloader+partitions+app (full flash — tick 'Erase device')"
+                },
+                {
+                  "type": "flash-update",
+                  "name": "heltec_v3_receiver.bin",
+                  "title": "App firmware only (keeps existing bootloader, safe for updates)"
+                }
+              ],
+              "notes": "v3-ultrasonic build\n* Receives LoRa DMs, posts to Bayou\n* Bayou defaults baked in (bayou_public_key = mfupcqtx34ee, bayou_private_key = t3w7v5zpk8ya) — override with `set bayou_public_key ...` / `set bayou_private_key ...`\n* Set WiFi with `set wifi_ssid ...` and `set wifi_password ...`, then `reboot`"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
