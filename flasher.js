@@ -18,6 +18,20 @@ try {
   console.warn('No /releases endpoint — GitHub-driven versions disabled.', e);
 }
 
+async function fetchSvgInline(url) {
+  if (!url || !/\.svg(\?|$)/i.test(url)) return '';
+  try {
+    const res = await fetch(url);
+    if (res.ok) return await res.text();
+  } catch (e) {
+    console.warn(`Could not inline SVG ${url}:`, e);
+  }
+  return '';
+}
+
+const explainerSvgInline = await fetchSvgInline(config.explainer && config.explainer.image);
+const explainerSvgMobileInline = await fetchSvgInline(config.explainer && config.explainer.imageMobile);
+
 const defaultCommandReference = {
   'time ': 'Set time {epoch-secs}',
   'erase': 'Erase filesystem',
@@ -235,6 +249,13 @@ function setup() {
     if(!firstVersion) return false;
 
     return firmware.version[firstVersion].files.length > 0;
+  }
+
+  const getPrimaryFirmwareFiles = (device) => {
+    const fw = device.firmware && device.firmware[0];
+    if(!fw) return [];
+    const firstVersion = fw.version && fw.version[Object.keys(fw.version)[0]];
+    return firstVersion ? firstVersion.files : [];
   }
 
   // --- URL Routing ---
@@ -637,6 +658,13 @@ function setup() {
     selected.version = Object.keys(firmware.version)[0];
   });
 
+  watch(() => selected.device, (device) => {
+    if(device && !selected.firmware) {
+      const roles = (device.firmware || []).filter(firmwareHasData);
+      if(roles.length === 1) selected.firmware = roles[0];
+    }
+  });
+
   watch(() => selected.device, updateUrl);
   watch(() => selected.firmware, updateUrl);
   watch(() => selected.version, () => updateUrl(true));  // replace: version is a refinement, not a new nav step
@@ -658,7 +686,7 @@ function setup() {
   return {
     snackbar,
     consoleEditBox, consoleWindow, consoleMouseUp,
-    config, devices, selected, flashing, deviceFilterText,
+    config, explainerSvgInline, explainerSvgMobileInline, devices, selected, flashing, deviceFilterText,
     flashDevice, flasherCleanup, dfuMode,
     serialCon, closeSerialCon, openSerialCon,
     sendCommand, openSerialGUI,
@@ -666,7 +694,7 @@ function setup() {
     stepBack,
     customFirmwareLoad, getFirmwarePath,
     getSelFwValue, getRoleFwValue, getNotice, formatChangeLog,
-    firmwareHasData,
+    firmwareHasData, getPrimaryFirmwareFiles,
     canFlash, nrfErase
   }
 }

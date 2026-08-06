@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MeshCore Ultrasonic Sensor — Setup</title>
+  <title>Setting up a MeshCore-based Ultrasonic Water Level Sensor</title>
   <link href="/css/beer.css" rel="stylesheet">
   <link href="/css/flasher.css" rel="stylesheet">
   <script type="module" src="/flasher.js"></script>
@@ -54,10 +54,10 @@
             <div class="max" v-else>
               <h6>Flashing complete!</h6>
               <nav class="small-margin">
-                <button @click="openSerialGUI()" v-if="selected.firmware.role === 'roomServer' || selected.firmware.role === 'repeater'">
-                  <i>manufacturing</i>
-                  <span>Configure via USB</span>
-                  <div class="tooltip left max">Open GUI to configure Repeaters and Room servers via USB serial</div>
+                <button @click="openSerialCon()">
+                  <i>terminal</i>
+                  <span>Open Console</span>
+                  <div class="tooltip left max">Open the serial console to configure this device</div>
                 </button>
                 <button @click="close">
                   <i>arrow_back</i>
@@ -219,86 +219,101 @@
       </div>
       <div v-else>
         <header>
-          <nav>
-            <i>bolt</i>
-            <h5 class="small max logo-top">
-              <img src="/img/meshcore.svg"> <span>flasher</span>
-            </h5>
-            <button class="transparent hide-mobile" @click="openSerialGUI()">
-              <i>manufacturing</i>
-              <span>Repeater Setup</span>
-              <div class="tooltip left max">Open GUI to configure Repeaters and Room servers via USB serial</div>
-            </button>
-            <button class="transparent" @click="openSerialCon()">
-              <i>terminal</i>
-              <span>Console</span>
-              <div class="tooltip left max">Open serial console to manage Routers and Room servers</div>
-            </button>
+          <nav class="brand-row">
+            <img src="/img/rural_rivers_project.png" alt="Rural Rivers Project" class="brand-logo brand-logo--rrp">
+            <img src="/img/meshcore.svg" alt="MeshCore" class="brand-logo brand-logo--meshcore">
           </nav>
-          <nav class="no-margin">
-            <h6 class="small max">Choose device</h6>
+          <nav>
+            <h3 class="max page-main-title">Setting up a MeshCore-based Ultrasonic Water Level Sensor</h3>
           </nav>
         </header>
-        <article v-if="config.explainer" class="explainer">
-          <h5 v-if="config.explainer.title" class="small">{{ config.explainer.title }}</h5>
-          <img v-if="config.explainer.image" :src="config.explainer.image" class="explainer-image" alt="System overview">
-          <div v-if="config.explainer.body" v-html="config.explainer.body"></div>
-        </article>
-        <div class="field label prefix suffix border w-100 no-margin">
-          <i>search</i>
-          <input type="text" placeholder=" " v-model="deviceFilterText" autofocus>
-          <label>Filter</label>
+
+        <div class="toc" role="navigation" aria-label="Table of contents">
+          <div class="toc-heading">Contents</div>
+          <ol class="toc-list">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#flashing">{{ (config.flashingSection && config.flashingSection.title) || 'Flashing the Firmware' }}</a></li>
+            <li v-if="config.contactExchange"><a href="#contact-exchange">{{ config.contactExchange.title }}</a></li>
+            <li v-if="config.configuration"><a href="#configuration">{{ config.configuration.title }}</a></li>
+          </ol>
         </div>
-        <ul class="list border">
-          <li v-for="(deviceGroup, type) in devices">
-            <details open>
-              <summary style="background-color: var(--surface-container)">
-                <div>
-                  <strong v-if="type === 'ripple'">Ripple Firmware</strong>
-                  <strong v-else-if="type === 'meshos'">MeshOS Firmware</strong>
-                  <strong v-else-if="type === 'community'">Community Firmware</strong>
-                  <div class="tooltip right max">
-                    <template v-if="type === 'ripple'">
-                      Freemium firmware provided by <a class="inverse-link" target="_blank" href="https://buymeacoffee.com/ripplebiz">Ripple Radios</a>
-                    </template>
-                    <template v-if="type === 'meshos'">
-                      Freemium firmware provided by Andy Kirby
-                    </template>
-                    <template v-else-if="type === 'community'">
-                      Open Source <a class="inverse-link" target="_blank" href="https://github.com/meshcore-dev/MeshCore">Community firmware</a>
-                    </template>
-                  </div>
-                </div>
-              </summary>
-              <ul class="list border">
-                <li v-for="device in deviceGroup">
-                  <template v-if="device.firmware.length > 0">
-                    <button class="device-select transparent" @click="selected.device = device">
-                      <img class="icon" :title="device.type" :src="`/img/${device.type}.svg`" v-if="device.type !== 'noflash'">
-                      <i v-else>developer_board</i>
-                      <span>{{ device.name }}</span>
-                      <div class="tooltip right max" v-if="device.tooltip" v-html="device.tooltip"></div>
-                      <div class="max"></div>
-                    </button>
+
+        <section class="page-section" id="overview">
+          <h4 class="section-title">1. Overview</h4>
+          <article v-if="config.explainer" class="explainer">
+            <h5 v-if="config.explainer.title" class="small">{{ config.explainer.title }}</h5>
+            <div v-if="explainerSvgInline" class="explainer-image inline-svg svg-desktop" v-html="explainerSvgInline"></div>
+            <div v-if="explainerSvgMobileInline" class="explainer-image inline-svg svg-mobile" v-html="explainerSvgMobileInline"></div>
+            <img v-else-if="!explainerSvgInline && config.explainer.image" :src="config.explainer.image" class="explainer-image" alt="System overview">
+            <div v-if="config.explainer.body" v-html="config.explainer.body"></div>
+          </article>
+        </section>
+
+        <section class="page-section" id="flashing">
+          <h4 class="section-title">2. {{ config.flashingSection && config.flashingSection.title || 'Flashing the Firmware' }}</h4>
+          <div v-if="config.flashingSection && config.flashingSection.intro" v-html="config.flashingSection.intro"></div>
+          <ul class="list border">
+            <template v-for="(deviceGroup, type) in devices">
+              <template v-for="device in deviceGroup">
+                <li v-if="device.firmware.length > 0">
+                  <button class="device-select transparent" @click="selected.device = device">
+                    <img class="icon" :title="device.type" :src="`/img/${device.type}.svg`" v-if="device.type !== 'noflash'">
+                    <i v-else>developer_board</i>
+                    <span>{{ device.name }}</span>
+                    <div class="tooltip right max" v-if="device.tooltip" v-html="device.tooltip"></div>
                     <div class="max"></div>
-                    <img class="icon" :src="device.icon" v-if="device.icon" >
-                  </template>
+                  </button>
+                  <div class="max"></div>
+                  <img class="icon" :src="device.icon" v-if="device.icon">
                 </li>
-              </ul>
-            </details>
-          </li>
-          <li>
-            <label>
-              <i>unknown_document</i>&nbsp;
-              <strong style="font-size: small;">Custom Firmware</strong>
-              <div class="tooltip right max">
-                Flash custom firmware file from your computer.
-                Flasher supports <b>.bin</b> files for esp32 devices and OTA <b>.zip</b> files for nRF52 devices.
+              </template>
+            </template>
+            <li>
+              <label>
+                <i>unknown_document</i>&nbsp;
+                <strong style="font-size: small;">Custom Firmware</strong>
+                <div class="tooltip right max">
+                  Flash a firmware file from your computer.
+                  Supports <b>.bin</b> for ESP32 devices and OTA <b>.zip</b> for nRF52 devices.
+                </div>
+                <input type="file" accept=".zip,.bin" @change="customFirmwareLoad">
+              </label>
+            </li>
+          </ul>
+        </section>
+
+        <section v-if="config.contactExchange" class="page-section" id="contact-exchange">
+          <h4 class="section-title">3. {{ config.contactExchange.title }}</h4>
+          <div v-if="config.contactExchange.content" v-html="config.contactExchange.content"></div>
+        </section>
+
+        <section v-if="config.configuration" class="page-section" id="configuration">
+          <h4 class="section-title">4. {{ config.configuration.title }}</h4>
+          <nav class="small-margin">
+            <button @click="openSerialCon()" :disabled="!flashing.supported">
+              <i>terminal</i>
+              <span>Open Serial Console</span>
+              <div class="tooltip right max" v-if="!flashing.supported">Web Serial requires Chrome or Edge on Desktop.</div>
+            </button>
+          </nav>
+          <div v-if="config.configuration.intro" v-html="config.configuration.intro"></div>
+          <template v-if="config.configuration.helpText">
+            <h5>Help Menus</h5>
+            <p>Reference copies of each device's <code>help</code> output — the same list you'll see if you type <code>help</code> in the console.</p>
+            <div class="help-grid">
+              <div v-if="config.configuration.helpText.sender" class="help-card">
+                <h6 class="small strong"><i>sensors</i>&nbsp;Sender — <code>help</code></h6>
+                <pre class="help-output">{{ config.configuration.helpText.sender }}</pre>
               </div>
-              <input type="file" accept=".zip,.bin" @change="customFirmwareLoad">
-            </label>
-          </li>
-        </ul>
+              <div v-if="config.configuration.helpText.receiver" class="help-card">
+                <h6 class="small strong"><i>cloud_upload</i>&nbsp;Receiver — <code>help</code></h6>
+                <pre class="help-output">{{ config.configuration.helpText.receiver }}</pre>
+              </div>
+            </div>
+          </template>
+          <div v-if="config.configuration.commonSettings" v-html="config.configuration.commonSettings"></div>
+        </section>
+
       </div>
     </div>
     <div v-if="serialCon.opened" class="overlay active">

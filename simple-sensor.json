@@ -2,8 +2,26 @@
   "staticPath": "/firmware/simple-sensor",
   "explainer": {
     "title": "MeshCore Ultrasonic Sensor — Sender + Receiver",
-    "body": "<p>This kit is a pair of MeshCore devices that bridge a MaxBotix ultrasonic distance sensor to the internet over LoRa.</p><ul><li><b>Sender</b> — a Rook (nRF52840) that reads the ultrasonic sensor and transmits <code>[SENSOR] dist=... batt=...</code> LoRa DMs.</li><li><b>Receiver</b> — a Heltec V3 (ESP32-S3) that receives, ACKs, and POSTs the reading to Bayou over WiFi.</li></ul><p>Flash both devices below, then use the <b>Console</b> to set WiFi credentials on the receiver and pair the two devices.</p>",
-    "image": "/img/sensor-system.svg"
+    "body": "<p>This kit is a pair of MeshCore devices that bridge a MaxBotix ultrasonic distance sensor to the internet over LoRa.</p><ul><li><b>Sender</b> — a Rook (nRF52840) that reads the ultrasonic sensor and transmits <code>[SENSOR] dist=... batt=...</code> LoRa DMs.</li><li><b>Receiver</b> — a Heltec V3 (ESP32-S3) that receives, ACKs, and POSTs the reading to Bayou over WiFi.</li></ul><p>Setup is three steps: flash the firmware onto both devices, get them to exchange identities so they can talk to each other, then configure WiFi and any other settings from the serial console.</p>",
+    "image": "/img/sensor-system.svg",
+    "imageMobile": "/img/sensor-system-mobile.svg"
+  },
+  "flashingSection": {
+    "title": "Flashing the Firmware",
+    "intro": "<p>Both devices need firmware installed once. Pick a device below to flash it. The receiver flashes directly from your browser using Web Serial. The sender flashes by dragging its <code>.uf2</code> file onto a USB drive that appears when you double-tap the reset button (Adafruit nRF52 UF2 bootloader — no external tool needed).</p>"
+  },
+  "contactExchange": {
+    "title": "Connecting Sender and Receiver via Advert",
+    "content": "<p>Before the sender can transmit readings to the receiver, both devices need to know each other's identity (public keys). The easiest way is to power both devices up next to each other and trigger each one to broadcast an <b>advert</b> — a small LoRa packet containing its identity and name — using its on-board button. The other device hears the advert and auto-adds it as a contact.</p><ol><li>Power up both devices next to each other. A few meters apart is plenty for indoor testing.</li><li>On the <b>receiver</b>: short-press the user button repeatedly to cycle the OLED through pages, and stop when you see the <b>Advert</b> page.</li><li>Long-press the button. The screen shows <i>&quot;Advert sent!&quot;</i> — the receiver has broadcast its identity, and the sender will hear it and add the receiver to its contacts.</li><li>Now repeat on the <b>sender</b>: short-press to cycle to the Advert page, then long-press to send. The receiver hears and adds the sender.</li></ol><p>Both devices now know each other. You can verify by opening either device's serial console (see next section) and running <code>list</code> — the other device should appear in the contacts list.</p>"
+  },
+  "configuration": {
+    "title": "Configuring Other Settings (WiFi, Measurement Interval, etc.)",
+    "intro": "<h5>What is the serial console?</h5><p>The serial console is a text interface to the device, exposed over USB. This page opens a serial connection directly in your browser — no external tool needed. It uses the <a href='https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API' target='_blank'>Web Serial API</a>, which works in <b>Chrome and Edge on desktop</b> (not Firefox or Safari, and not on mobile).</p><h5>How to connect</h5><ol><li>Plug the device into your computer via USB.</li><li>Click <b>Open Serial Console</b> above.</li><li>A browser dialog appears listing serial ports — pick the one for your device. The Rook usually shows up as <code>USB Serial</code> (Nordic UART), the Heltec as <code>CP210x</code> (Silicon Labs bridge).</li><li>Type <code>help</code> and press Enter — the device lists every command it understands. Reference copies of that <code>help</code> output for each device are shown below so you know what to expect.</li></ol>",
+    "commonSettings": "<h5>Common settings</h5><ul class='settings-list'><li><b>Setting the sender's target — sender only:</b> after the sender and receiver know each other (see section 3), tell the sender which contact to transmit to. On the sender's console:<pre><code>list\ntarget Receiver</code></pre><code>list</code> shows every known contact — the receiver appears with its name (default <code>Receiver</code>). <code>target Receiver</code> locks the send target so every sensor reading goes to that contact.</li><li><b>WiFi credentials — receiver only:</b><pre><code>set wifi_ssid your-network-name\nset wifi_password your-network-password\nreboot</code></pre></li><li><b>Measurement interval — sender only:</b> <code>set interval 60</code> sends every 60 seconds (minimum 10).</li><li><b>Node name — either device:</b> <code>set name My-Sensor</code> changes the name shown in adverts and on the OLED.</li><li><b>Bayou keys — receiver only:</b> baked into the firmware by default. Override with <code>set bayou_public_key ...</code> and <code>set bayou_private_key ...</code> to point at a different Bayou instance.</li></ul>",
+    "helpText": {
+      "sender": "Commands:\n   card                  - show your biz card for sharing\n   import <biz card>     - import a contact's biz card\n   list {n}              - list contacts (last n)\n   purge                 - clear all contacts\n   target                - show current targets\n   target add <name>     - add a send target (max 4)\n   target remove <name>  - remove a send target\n   target clear          - clear all targets\n   target <name>         - set to single target (replaces all)\n   to <name>             - alias for 'target <name>'\n   send                  - send a reading now\n   set name <name>       - set node name\n   set node_id <id>      - set node ID (1-65535)\n   set interval <secs>   - set send interval (min 10)\n   advert                - send advertisement\n   ver                   - show firmware version\n   help                  - show this help",
+      "receiver": "Commands:\n   card                          - show biz card\n   import <biz card>             - import a contact\n   list {n}                      - list contacts (* = favourite)\n   purge                         - clear all contacts\n   favourite <name>              - protect contact from eviction\n   unfavourite <name>            - clear favourite flag\n   advert                        - send advertisement\n   status                        - show WiFi/Bayou/last data\n   show_settings                 - show node config + favourites\n   set name <name>               - set node name\n   set wifi_ssid <ssid>          - set WiFi SSID (reboot)\n   set wifi_password <pwd>       - set WiFi password (reboot)\n   set bayou_public_key <key>    - set Bayou public key\n   set bayou_private_key <key>   - set Bayou private key\n   ver                           - firmware version\n   help                          - show this help"
+    }
   },
   "role": {
     "sensorSender": {
@@ -18,14 +36,14 @@
     }
   },
   "notice": {
-    "uf2Manual": "<article class='fill small-round'><b>How to flash this Rook</b><br>1. Double-tap the reset button — a <code>NICENANO</code> USB drive appears.<br>2. Click <b>Download</b> below and drag <code>rook_sender.uf2</code> onto that drive.<br>3. The device reboots automatically when the copy finishes.</article>"
+    "uf2Manual": "<article class='fill small-round'><b>How to flash this Rook</b><br>1. Double-tap the reset button — a <code>NICENANO</code> USB drive appears.<br>2. Click <b>Download</b> below and drag the <code>.uf2</code> file onto that drive.<br>3. The device reboots automatically when the copy finishes.</article>"
   },
   "commands": {
     "advert": "Broadcast this device's identity",
     "list": "List known contacts",
     "card": "Show this device's contact card (hex)",
     "import ": "Import a contact card {hex}",
-    "settings": "Show current settings",
+    "show_settings": "Show current settings (receiver)",
     "status": "Show WiFi + Bayou connection status (receiver)",
     "purge": "Erase saved preferences",
     "reboot": "Reboot the device",
@@ -64,8 +82,8 @@
               "files": [
                 {
                   "type": "download",
-                  "name": "rook_sender.uf2",
-                  "title": "rook_sender.uf2 (drag onto NICENANO drive in bootloader mode)"
+                  "name": "rook_sender_ultrasonic_v3.uf2",
+                  "title": "rook_sender_ultrasonic_v3.uf2 — drag onto NICENANO drive in DFU bootloader mode"
                 }
               ],
               "notes": "v3-ultrasonic build\n* MaxBotix MB7388 on Serial1 (D0 = P0.08, \"RX1\")\n* Transmits [SENSOR] dist=... batt=... to the paired receiver\n* Pair by running `advert` on the receiver, then `target <receiver-name>` on the sender"
@@ -89,13 +107,13 @@
               "files": [
                 {
                   "type": "flash-wipe",
-                  "name": "heltec_v3_receiver_merged.bin",
-                  "title": "Combined bootloader+partitions+app (full flash — tick 'Erase device')"
+                  "name": "heltec_v3_receiver_ultrasonic_v3_merged.bin",
+                  "title": "heltec_v3_receiver_ultrasonic_v3_merged.bin — full flash (tick 'Erase device')"
                 },
                 {
                   "type": "flash-update",
-                  "name": "heltec_v3_receiver.bin",
-                  "title": "App firmware only (keeps existing bootloader, safe for updates)"
+                  "name": "heltec_v3_receiver_ultrasonic_v3.bin",
+                  "title": "heltec_v3_receiver_ultrasonic_v3.bin — app only (safe update, keeps bootloader)"
                 }
               ],
               "notes": "v3-ultrasonic build\n* Receives LoRa DMs, posts to Bayou\n* Bayou defaults baked in (bayou_public_key = mfupcqtx34ee, bayou_private_key = t3w7v5zpk8ya) — override with `set bayou_public_key ...` / `set bayou_private_key ...`\n* Set WiFi with `set wifi_ssid ...` and `set wifi_password ...`, then `reboot`"
