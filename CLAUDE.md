@@ -4,7 +4,7 @@ Guide for Claude Code agents working in this repo.
 
 ## What this is
 
-A fork of the [MeshCore flasher](https://flasher.meshcore.io) web UI, tailored into a **guided setup page for a specific two-device kit**: an ultrasonic water-level sensor (Rook v4 as sender + Heltec V3 as receiver) that bridges LoRa DMs to Bayou over WiFi. The upstream project is a generic multi-device flasher; this fork narrows it to one hardware pair, adds an explainer / TOC / help-menu sections, and hosts the firmware bins locally.
+A fork of the [MeshCore flasher](https://flasher.meshcore.io) web UI, tailored into a **guided setup page for a specific two-device kit**: an ultrasonic water-level sensor (Rook v4 as sender + Heltec V3 as receiver) that bridges LoRa DMs to Bayou over WiFi. Note: the sender is **Rook v4 hardware**, but its firmware is versioned separately — the current build is tagged `v3-ultrasonic` (files named `rook_sender_ultrasonic_v3.uf2`). Don't conflate the hardware rev with the firmware version. The upstream project is a generic multi-device flasher; this fork narrows it to one hardware pair, adds an explainer / TOC / help-menu sections, and hosts the firmware bins locally.
 
 Deploy target: a static blog page. Users open it in Chrome/Edge, flash the Heltec V3 directly over Web Serial, drag the Rook UF2 onto the NICENANO drive, then use the in-page serial console to configure WiFi + pair the devices.
 
@@ -38,7 +38,7 @@ python3 -m http.server 8765
 # open http://localhost:8765/
 ```
 
-Omit `--bind 127.0.0.1` if you want to reach it from a phone on the same WiFi (find LAN IP with `hostname -I`). For cellular / real testing, use `cloudflared tunnel --url http://localhost:8765`.
+`http.server` binds to all interfaces (`0.0.0.0`) by default, so a phone on the same WiFi can reach `http://<LAN-IP>:8765` — find the IP with `hostname -I`. Add `--bind 127.0.0.1` only if you want to restrict access to localhost. For cellular / real testing, use `cloudflared tunnel --url http://localhost:8765`.
 
 ## Web Serial caveats
 
