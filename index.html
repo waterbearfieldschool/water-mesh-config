@@ -232,6 +232,7 @@
           <div class="toc-heading">Contents</div>
           <ol class="toc-list">
             <li><a href="#overview">Overview</a></li>
+            <li v-if="config.quickGuides"><a href="#quick-guides">{{ config.quickGuides.title }}</a></li>
             <li><a href="#flashing">{{ (config.flashingSection && config.flashingSection.title) || 'Flashing the Firmware' }}</a></li>
             <li v-if="config.contactExchange"><a href="#contact-exchange">{{ config.contactExchange.title }}</a></li>
             <li v-if="config.configuration"><a href="#configuration">{{ config.configuration.title }}</a></li>
@@ -249,8 +250,17 @@
           </article>
         </section>
 
+        <section v-if="config.quickGuides" class="page-section" id="quick-guides">
+          <h4 class="section-title">2. {{ config.quickGuides.title }}</h4>
+          <div v-if="config.quickGuides.intro" v-html="config.quickGuides.intro"></div>
+          <template v-for="guide in config.quickGuides.guides" :key="guide.title">
+            <h5 class="small guide-title">{{ guide.title }}</h5>
+            <div v-html="guide.embed"></div>
+          </template>
+        </section>
+
         <section class="page-section" id="flashing">
-          <h4 class="section-title">2. {{ config.flashingSection && config.flashingSection.title || 'Flashing the Firmware' }}</h4>
+          <h4 class="section-title">3. {{ config.flashingSection && config.flashingSection.title || 'Flashing the Firmware' }}</h4>
           <div v-if="config.flashingSection && config.flashingSection.intro" v-html="config.flashingSection.intro"></div>
           <ul class="list border">
             <template v-for="(deviceGroup, type) in devices">
@@ -283,12 +293,12 @@
         </section>
 
         <section v-if="config.contactExchange" class="page-section" id="contact-exchange">
-          <h4 class="section-title">3. {{ config.contactExchange.title }}</h4>
+          <h4 class="section-title">4. {{ config.contactExchange.title }}</h4>
           <div v-if="config.contactExchange.content" v-html="config.contactExchange.content"></div>
         </section>
 
         <section v-if="config.configuration" class="page-section" id="configuration">
-          <h4 class="section-title">4. {{ config.configuration.title }}</h4>
+          <h4 class="section-title">5. {{ config.configuration.title }}</h4>
           <nav class="small-margin">
             <button @click="openSerialCon()" :disabled="!flashing.supported">
               <i>terminal</i>

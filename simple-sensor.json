@@ -6,6 +6,16 @@
     "image": "img/sensor-system.svg",
     "imageMobile": "img/sensor-system-mobile.svg"
   },
+  "quickGuides": {
+    "title": "Quick Guides",
+    "intro": "<p>Short how-to videos for common setup tasks.</p>",
+    "guides": [
+      {
+        "title": "Configuring Receiver WiFi",
+        "embed": "<div class=\"video-embed\"><iframe src=\"https://www.youtube.com/embed/n2OfZ-lii0A\" title=\"Configuring Receiver WiFi\" loading=\"lazy\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" allowfullscreen></iframe></div>"
+      }
+    ]
+  },
   "flashingSection": {
     "title": "Flashing the Firmware",
     "intro": "<p>Both devices need firmware installed once. Pick a device below to flash it. The receiver flashes directly from your browser using Web Serial. The sender flashes by dragging its <code>.uf2</code> file onto a USB drive that appears when you double-tap the reset button (Adafruit nRF52 UF2 bootloader — no external tool needed).</p>"
