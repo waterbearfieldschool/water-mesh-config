@@ -1,12 +1,14 @@
-# CLAUDE.md — micro-config
+# CLAUDE.md — water-mesh-config
 
 Guide for Claude Code agents working in this repo.
+
+This is the **Waterbear Field School** fork of edgecollective's `micro-config` project. It is deployed as a GitHub Pages project site under the `waterbearfieldschool` org and served at **`waterbearfieldschool.org/water-mesh-config/`** (the org's custom domain applies to project sites, so no per-repo `CNAME` is needed). It's linked from the WFS site's journal + Resources section.
 
 ## What this is
 
 A fork of the [MeshCore flasher](https://flasher.meshcore.io) web UI, tailored into a **guided setup page for a specific two-device kit**: an ultrasonic water-level sensor (Rook v4 as sender + Heltec V3 as receiver) that bridges LoRa DMs to Bayou over WiFi. Note: the sender is **Rook v4 hardware**, but its firmware is versioned separately — the current build is tagged `v3-ultrasonic` (files named `rook_sender_ultrasonic_v3.uf2`). Don't conflate the hardware rev with the firmware version. The upstream project is a generic multi-device flasher; this fork narrows it to one hardware pair, adds an explainer / TOC / help-menu sections, and hosts the firmware bins locally.
 
-Deploy target: a static blog page. Users open it in Chrome/Edge, flash the Heltec V3 directly over Web Serial, drag the Rook UF2 onto the NICENANO drive, then use the in-page serial console to configure WiFi + pair the devices.
+Deploy target: a GitHub Pages project site at `waterbearfieldschool.org/water-mesh-config/`. Users open it in Chrome/Edge, flash the Heltec V3 directly over Web Serial, drag the Rook UF2 onto the NICENANO drive, then use the in-page serial console to configure WiFi + pair the devices.
 
 ## Architecture
 
@@ -29,7 +31,7 @@ Vue 3 SPA, single `index.html` + `flasher.js` + `simple-sensor.json`. **All page
 
 **Config JSON conventions.** Section keys: `explainer`, `flashingSection`, `contactExchange`, `configuration` (with `intro` + `commonSettings` + `helpText`). Per-device: `firmware[].version['<version-tag>'].files[]` with `type` in `download`/`flash-wipe`/`flash-update`.
 
-**Subpath portability.** All asset paths are relative (no leading `/`) so the site works when hosted at any subpath (e.g. `edgecollective.io/micro-config/`). The SPA URL routing is fragment-based (`#/rook-v4/...`) rather than pathname-based, so navigation state changes don't push the browser out of the deployment subpath and no server rewrites are needed. When adding new asset paths anywhere (HTML, JSON, JS, SVG), keep them relative.
+**Subpath portability.** All asset paths are relative (no leading `/`) so the site works when hosted at any subpath (e.g. `waterbearfieldschool.org/water-mesh-config/`). The SPA URL routing is fragment-based (`#/rook-v4/...`) rather than pathname-based, so navigation state changes don't push the browser out of the deployment subpath and no server rewrites are needed. When adding new asset paths anywhere (HTML, JSON, JS, SVG), keep them relative.
 
 ## Running locally
 
