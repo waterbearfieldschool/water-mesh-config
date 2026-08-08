@@ -458,3 +458,7 @@ body:has([v-cloak]):after {
   color: #6cc;
   text-decoration: underline;
 }
+/* mobile diagram has ~no top whitespace, so balance the bubble symmetrically there */
+@media (max-width: 640px) {
+  #app .explainer .explainer-credit { margin: 1.25rem 0; }
+}
