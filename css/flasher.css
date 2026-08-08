@@ -440,10 +440,10 @@ body:has([v-cloak]):after {
 .guide-title { margin-top: 1rem; }
 
 /* Overview illustration credit */
-.explainer-credit {
+#app .explainer .explainer-credit {
   width: fit-content;
   max-width: 92%;
-  margin: 1.5rem auto 1.5rem;
+  margin: 2.25rem 0 0.5rem;
   padding: 0.5rem 1.1rem;
   text-align: center;
   color: #eafffb;
