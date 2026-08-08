@@ -444,13 +444,17 @@ body:has([v-cloak]):after {
   width: fit-content;
   max-width: 92%;
   margin: 2.25rem 0 0.5rem;
-  padding: 0.5rem 1.1rem;
+  padding: 0.25rem 1.1rem;
   text-align: center;
   color: #eafffb;
   background: rgba(108, 204, 204, 0.14);
   border: 1px solid rgba(108, 204, 204, 0.55);
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
   font-style: italic;
-  line-height: 1.35;
+  line-height: 1.3;
+}
+#app .explainer .explainer-credit a {
+  color: #6cc;
+  text-decoration: underline;
 }
