@@ -243,10 +243,10 @@
           <h4 class="section-title">1. Overview</h4>
           <article v-if="config.explainer" class="explainer">
             <h5 v-if="config.explainer.title" class="small">{{ config.explainer.title }}</h5>
+            <p v-if="config.explainer.imageCredit" class="explainer-credit" v-html="config.explainer.imageCredit"></p>
             <div v-if="explainerSvgInline" class="explainer-image inline-svg svg-desktop" v-html="explainerSvgInline"></div>
             <div v-if="explainerSvgMobileInline" class="explainer-image inline-svg svg-mobile" v-html="explainerSvgMobileInline"></div>
             <img v-else-if="!explainerSvgInline && config.explainer.image" :src="config.explainer.image" class="explainer-image" alt="System overview">
-            <p v-if="config.explainer.imageCredit" class="explainer-credit" v-html="config.explainer.imageCredit"></p>
             <div v-if="config.explainer.body" v-html="config.explainer.body"></div>
           </article>
         </section>
